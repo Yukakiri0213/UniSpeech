@@ -1,11 +1,13 @@
 import Foundation
 import Speech
 
-public class SpeechRecognizer : NSObject {
-    static let sharedInstance: SpeechRecognizer = SpeechRecognizer()
 
-    private var _unitySendMessageGameObjectName: String = "SpeechRecognizer"
-    var unitySendMessageGameObjectName: String {
+
+@objcMembers public class SpeechRecognizer : NSObject {
+    public static let sharedInstance: SpeechRecognizer = SpeechRecognizer()
+
+    public var _unitySendMessageGameObjectName: String = "SpeechRecognizer"
+    public var unitySendMessageGameObjectName: String {
         get {
             return _unitySendMessageGameObjectName
         }
@@ -24,7 +26,7 @@ public class SpeechRecognizer : NSObject {
         speechRecognizer.delegate = self
     }
 
-    func requestRecognizerAuthorization() {
+    public func requestRecognizerAuthorization() {
         SFSpeechRecognizer.requestAuthorization { authStatus in
             OperationQueue.main.addOperation {
                 switch authStatus {
@@ -43,12 +45,15 @@ public class SpeechRecognizer : NSObject {
                 case .notDetermined:
                     // Speech recognition not yet authorized
                     self.unitySendMessage("OnUnauthorized")
+
+                default:
+                    self.unitySendMessage("OnUnauthorized")
                 }
             }
         }
     }
 
-    func startRecord() -> Bool {
+    public func startRecord() -> Bool {
         if audioEngine.isRunning {
             return false
         }
@@ -56,7 +61,7 @@ public class SpeechRecognizer : NSObject {
         return true
     }
 
-    func stopRecord() -> Bool {
+    public func stopRecord() -> Bool {
         if !audioEngine.isRunning {
             return false
         }
@@ -65,17 +70,17 @@ public class SpeechRecognizer : NSObject {
         return true
     }
     
-    private func startRecording() throws {
+    public func startRecording() throws {
         refreshTask()
 
         let audioSession = AVAudioSession.sharedInstance()
-        try audioSession.setCategory(AVAudioSessionCategoryRecord)
-        try audioSession.setMode(AVAudioSessionModeMeasurement)
-        try audioSession.setActive(true, with: .notifyOthersOnDeactivation)
+        try audioSession.setCategory(AVAudioSession.Category.record)
+        try audioSession.setMode(AVAudioSession.Mode.measurement)
+        try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
         
         recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
         
-        guard let inputNode = audioEngine.inputNode else { fatalError("Audio engine has no input node") }
+        let inputNode = audioEngine.inputNode
         guard let recognitionRequest = recognitionRequest else { fatalError("Unable to created a SFSpeechAudioBufferRecognitionRequest object") }
         
         recognitionRequest.shouldReportPartialResults = true
@@ -108,7 +113,7 @@ public class SpeechRecognizer : NSObject {
         try startAudioEngine()
     }
 
-    private func refreshTask() {
+    public func refreshTask() {
         if let recognitionTask = recognitionTask {
             recognitionTask.cancel()
             self.recognitionTask = nil
@@ -120,10 +125,16 @@ public class SpeechRecognizer : NSObject {
         try audioEngine.start()
     }
 
-    func unitySendMessage(_ methodName: String, message: String = "") {
-        UnitySendMessage(self.unitySendMessageGameObjectName, methodName, message)
+    public func unitySendMessage(_ methodName: String, message: String = "") {
+            let uf = UnityFramework()
+
+            uf.sendMessageToGO(
+            withName: self.unitySendMessageGameObjectName,
+            functionName: methodName,
+            message: message)
     }
 }
+
 
 extension SpeechRecognizer: SFSpeechRecognizerDelegate {
     public func speechRecognizer(_ speechRecognizer: SFSpeechRecognizer, availabilityDidChange available: Bool) {

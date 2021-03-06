@@ -4,4 +4,4 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "UnityInterface.h"
+#import <UnityFramework/UnityFramework-Swift.h>

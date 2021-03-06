@@ -1,7 +1,8 @@
 #import <Foundation/Foundation.h>
 #import <Speech/Speech.h>
-#import "unityswift-Swift.h"    // Required
+#import <UnityFramework/UnityFramework-Swift.h>    // Required
 // This header file is generated automatically when Xcode build runs.
+
 
 #pragma mark - C interface
 
