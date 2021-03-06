@@ -19,7 +19,8 @@ namespace UnitySwift {
                 var proj = new PBXProject();
                 proj.ReadFromFile(projPath);
 
-                var targetGuid = proj.TargetGuidByName(PBXProject.GetUnityTargetName());
+                //var targetGuid = proj.TargetGuidByName(PBXProject.GetUnityTargetName());
+                var targetGuid = proj.GetUnityFrameworkTargetGuid();
 
                 //// Configure build settings
                 proj.SetBuildProperty(targetGuid, "ENABLE_BITCODE", "NO");
