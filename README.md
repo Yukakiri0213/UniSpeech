@@ -1,6 +1,7 @@
 # UniSpeech
 
-iOS Speech framework plugin for Unity
+This is Fork of https://github.com/noir-neo/UniSpeech.
+I have updated this project to Unity 2019.4.
 
 ## Installation
 
